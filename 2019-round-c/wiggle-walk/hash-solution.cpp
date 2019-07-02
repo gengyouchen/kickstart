@@ -1,25 +1,26 @@
 #include <iostream>
+#include <string>
 #include <unordered_map>
+#include <utility>
 
 using namespace std;
 
-struct grid { int up, down, left, right; };
+class Solution {
+private:
+	struct Square {
+		int up, down, left, right;
+	};
+public:
+	/* time: O(n), space: O(n), where n = # of operations */
+	pair<int, int> wiggleWalk(int y, int x, int row, int col, const string& ops) {
+		unordered_map<int, unordered_map<int, Square>> h;
+		auto visited = [&](int y, int x) {
+			return h.count(y) && h[y].count(x);
+		};
 
-/* time: O(n), space: O(n) */
-int main() {
-	int T;
-	cin >> T;
-	for (int i = 1; i <= T; ++i) {
-		int N, R, C, SR, SC;
-		cin >> N >> R >> C >> SR >> SC;
-
-		int x = SC, y = SR;
-		unordered_map<int, unordered_map<int, grid>> h;
-		for (int j = 0; j < N; ++j) {
+		for (char op : ops) {
 			h[y][x].up = h[y][x].down = y;
 			h[y][x].left = h[y][x].right = x;
-
-			auto visited = [&](int y, int x) { return h.count(y) && h[y].count(x); };
 
 			if (visited(y, x - 1) && visited(y, x + 1)) {
 				const int left = h[y][x - 1].left, right = h[y][x + 1].right;
@@ -43,8 +44,6 @@ int main() {
 				h[down][x].up = y, h[y][x].down = down;
 			}
 
-			char op;
-			cin >> op;
 			switch (op) {
 				case 'N':
 					if (visited(y - 1, x))
@@ -68,7 +67,21 @@ int main() {
 					break;
 			}
 		}
-		cout << "Case #" << i << ": " << y << " " << x << endl;
+		return {y, x};
+	}
+};
+
+int main() {
+	int T;
+	cin >> T;
+	for (int i = 1; i <= T; ++i) {
+		int n, row, col, y, x;
+		string ops;
+		cin >> n >> row >> col >> y >> x >> ops;
+
+		Solution sol;
+		pair<int, int> ans = sol.wiggleWalk(y, x, row, col, ops);
+		cout << "Case #" << i << ": " << ans.first << " " << ans.second << endl;
 	}
 	return 0;
 }
