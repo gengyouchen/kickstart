@@ -1,9 +1,9 @@
 #include <algorithm>
-#include <iostream>
-#include <vector>
-#include <utility>
-#include <queue>
 #include <climits>
+#include <iostream>
+#include <queue>
+#include <utility>
+#include <vector>
 
 using namespace std;
 
@@ -26,7 +26,7 @@ public:
 		const int m = squares.size(), n = squares[0].size();
 		const vector<pair<int, int>> dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
-		vector<vector<int>> d(m, vector<int>(n, -1));
+		vector<vector<int>> d(m, vector<int>(n, INT_MAX));
 		queue<pair<int, int>> Q;
 		for (int y = 0; y < m; ++y) {
 			for (int x = 0; x < n; ++x) {
@@ -41,7 +41,7 @@ public:
 				Q.pop();
 				for (const auto& dir : dirs) {
 					const int y1 = y + dir.first, x1 = x + dir.second;
-					if (y1 >= 0 && y1 < m && x1 >= 0 && x1 < n && d[y1][x1] == -1)
+					if (y1 >= 0 && y1 < m && x1 >= 0 && x1 < n && d[y1][x1] == INT_MAX)
 						Q.emplace(y1, x1), d[y1][x1] = depth;
 				}
 			}
