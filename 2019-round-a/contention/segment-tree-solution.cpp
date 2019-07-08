@@ -162,6 +162,29 @@ public:
 				candidates.erase({gain[req], req}), gain[req] += nSeats, candidates.emplace(gain[req], req);
 				s.set(i, INT_MAX);
 			}
+
+			/*
+			 * <Greedy-choice Property>
+			 * We can greedily decide which booking will be the last request to be processed
+			 * (i.e. we choose the booking which can get the most remaining seats).
+			 * This will always yield a global optima sequence.
+			 *
+			 * <Proof>
+			 * Assume chooing bookings[i] to be the last request can get the most remaining seat.
+			 *
+			 * If there's a global optima sequence S1 which chooing bookings[z], not bookings[i] to be the last request:
+			 * S1: bookings[a], ... , bookings[h], bookings[i], bookings[j], ... , bookings[z]
+			 *
+			 * Then, we can always move bookings[i] to the last one as S2 without getting result worse:
+			 * S2: bookings[a], ... , bookings[h], bookings[j], ... , bookings[z], bookings[i]
+			 *
+			 * After moved, the seat numbers in bookings[a] ~ bookings[h] won't change,
+			 * and the seat numbers in bookings[j] ~ bookings[z] won't decrease.
+			 *
+			 * The seat numbers in bookings[i] may decrease after moved to the last one,
+			 * but it's still better then bookings[z] by definition (i.e. it's not the bottleneck).
+			 * Therefore, S2 is also a global optima sequence.
+			 */
 			const int req = candidates.rbegin()->second;
 			ans = min(ans, gain[req]);
 
