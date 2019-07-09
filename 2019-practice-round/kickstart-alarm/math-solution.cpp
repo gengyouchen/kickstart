@@ -8,8 +8,8 @@ using namespace std;
 class Solution {
 private:
 	long long mod(long long x) {
-		const long long p = MOD, r = x % p;
-		return (r >= 0) ? r : (r + p);
+		const long long r = x % MOD;
+		return (r >= 0) ? r : (r + MOD);
 	}
 	long long pow(long long base, long long exponent) {
 		long long ret = 1;
@@ -20,8 +20,17 @@ private:
 		}
 		return ret;
 	}
+	long long inv(long long x) {
+		/*
+		 * Because MOD is a prime number, for any 1 <= x < MOD,
+		 * we can use the Euler theorm to find x's modular multiplicative inverse
+		 */
+		return pow(x, MOD - 2);
+	}
 	long long geometricSeries(long long a, long long r, long long n) {
-		return mod(mod(a * mod(pow(r, n) - 1)) * pow(r - 1, MOD - 2));
+		if (r == 1)
+			return mod(a * n);
+		return mod(mod(a * mod(pow(r, n) - 1)) * inv(r - 1));
 	}
 public:
 	/* time: O(n*log(k)), space: O(1), where n = # of parameters */
@@ -72,10 +81,9 @@ public:
 		 *     Sf(1) = k, Sf(n) = Sf(n-1) + n * (n^k - 1) / (n-1)
 		 */
 		const int n = A.size();
-		long long Sf = k, Sdelta = 0, Spower = 0;
+		long long Sf = 0, Sdelta = 0, Spower = 0;
 		for (int len = 1; len <= n; ++len) {
-			if (len > 1)
-				Sf = mod(Sf + geometricSeries(len, len, k));
+			Sf = mod(Sf + geometricSeries(len, len, k));
 			Sdelta = mod(Sdelta + mod(A[len - 1] * Sf));
 			Spower = mod(Spower + Sdelta);
 		}
